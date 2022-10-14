@@ -18,7 +18,7 @@ var Errs = map[string]string{
 	"INTERNAL":        INTERNAL_ERR_MSG,
 	"ROUTE_NOT_FOUND": ROUTE_NOT_FOUND_ERR_MSG,
 	// Application messages
-	// ...
+	"CLUSTER-URL-IN-USE": "400 - Cluster URL already in user. Change the URL and try it again.",
 }
 
 // GetHTTPErr returns the Errs message HTTP status code. If the received error doesn't
