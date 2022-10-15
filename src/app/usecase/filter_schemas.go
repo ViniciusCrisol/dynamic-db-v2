@@ -16,7 +16,7 @@ func NewFilterSchemas(repo app.ClusterRepo) *FilterSchemas {
 	return &FilterSchemas{repo}
 }
 
-// Exec gets the cluster by its name and filters ti using the content key and value.
+// Exec gets the cluster by its name and filters it using the content key and value.
 func (ucs *FilterSchemas) Exec(name, k, v string) ([]*model.Schema, error) {
 	c, err := ucs.repo.Find(name)
 	if err != nil {

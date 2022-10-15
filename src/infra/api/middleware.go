@@ -1,9 +1,18 @@
 package api
 
 import (
+	"errors"
+	"strings"
+
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/locales/en"
+	universalTranslator "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
+	englishTranslations "github.com/go-playground/validator/v10/translations/en"
 	"github.com/viniciuscrisol/dynamic-db-v2/app"
 )
+
+const VALIDATION_ERR_PREFIX = "validation-error\n"
 
 // SendJSON returns to the HTTP client the data in a JSON.
 func SendJSON(status int, data any, ctx *gin.Context) {
@@ -14,14 +23,64 @@ func SendJSON(status int, data any, ctx *gin.Context) {
 	ctx.JSON(status, resp)
 }
 
-// HandleErr searches for error messages in the Errs list using the GetHTTPErr func. If an
-// matches, its message and status will be returned to the HTTP client. Otherwise, a
-// standard error will be returned.
+// HandleErr returns to the HTTP client BindRequestBody errors. BindRequestBody could
+// return a binding or a validation error. This function identifies the error type by the
+// message prefix and deals with it.
 func HandleErr(err error, context *gin.Context) {
+	msg := err.Error()
+	if !strings.HasPrefix(msg, VALIDATION_ERR_PREFIX) {
+		handleAppErr(err, context)
+		return
+	}
+	formattedMsg := strings.TrimPrefix(msg, VALIDATION_ERR_PREFIX)
+	resp := DefaultResponse{
+		Message: formattedMsg,
+		Status:  app.VALIDATION_ERR_STATUS,
+	}
+	context.JSON(app.VALIDATION_ERR_STATUS, resp)
+}
+
+// handleAppErr searches for error messages in the Errs list using the GetHTTPErr func. If
+// an matches, its message and status will be returned to the HTTP client. Otherwise, a
+// standard error will be returned.
+func handleAppErr(err error, context *gin.Context) {
 	msg, status := app.GetHTTPErr(err)
 	resp := DefaultResponse{
 		Message: msg,
 		Status:  status,
 	}
 	context.JSON(status, resp)
+}
+
+// BindRequestBody binds the request body into the binder variable. It also validates the
+// entries according to the "validate" tag of the struct fields. To change the validation
+// message language, switch the translator language.
+func BindRequestBody(binder any, context *gin.Context) error {
+	err := context.ShouldBindJSON(binder)
+	if err != nil {
+		return err
+	}
+	validate := validator.New()
+	err = validate.Struct(binder)
+	if err == nil {
+		return nil
+	}
+	english := en.New()
+	translator := universalTranslator.New(english, english)
+	englishTranslator, _ := translator.GetTranslator("en")
+	englishTranslations.RegisterDefaultTranslations(validate, englishTranslator)
+
+	return formatValidationMessages(err, englishTranslator)
+}
+
+// formatValidationMessages formats the validator output into a simple message. It is also
+// used to translate messages using the BindRequestBody translator.
+func formatValidationMessages(validationErrs error, englishTranslator universalTranslator.Translator) error {
+	msg := VALIDATION_ERR_PREFIX
+	errs := validationErrs.(validator.ValidationErrors)
+	for _, validationErr := range errs {
+		err := validationErr.Translate(englishTranslator)
+		msg += err + "\n"
+	}
+	return errors.New(msg)
 }

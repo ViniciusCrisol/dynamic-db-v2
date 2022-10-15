@@ -7,11 +7,11 @@ import (
 )
 
 type Cluster struct {
-	ID        string
-	Name      string
-	Schemas   []*Schema
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        string    `json:"id"`
+	Name      string    `json:"name"`
+	Schemas   []*Schema `json:"schemas"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // NewCluster returns a cluster using its name.

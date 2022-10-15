@@ -5,3 +5,7 @@ type DefaultResponse struct {
 	Status  int    `json:"status,omitempty"`
 	Message string `json:"message,omitempty"`
 }
+
+type CreateClusterDTO struct {
+	Name string `json:"name"`
+}

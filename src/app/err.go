@@ -6,6 +6,8 @@ const (
 	INTERNAL_ERR_STATUS = 500
 	INTERNAL_ERR_MSG    = "500 - Internal server error."
 	//
+	VALIDATION_ERR_STATUS = 400
+	//
 	ROUTE_NOT_FOUND_ERR_STATUS = 404
 	ROUTE_NOT_FOUND_ERR_MSG    = "404 - Route not found. Change the URL and try it again."
 )

@@ -7,10 +7,10 @@ import (
 )
 
 type Schema struct {
-	ID        string
-	Content   map[string]string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        string            `json:"id"`
+	Content   map[string]string `json:"content"`
+	CreatedAt time.Time         `json:"created_at"`
+	UpdatedAt time.Time         `json:"updated_at"`
 }
 
 // NewCluster returns a new schema. It could be stored on a cluster.
