@@ -14,7 +14,7 @@ type Cluster struct {
 	UpdatedAt time.Time
 }
 
-// NewCluster returns a new cluster.
+// NewCluster returns a cluster using its name.
 func NewCluster(name string) *Cluster {
 	now := time.Now()
 	return &Cluster{
@@ -26,7 +26,13 @@ func NewCluster(name string) *Cluster {
 	}
 }
 
-// AppendSchema stores a schema in the cluster.
-func (c *Cluster) AppendSchema(schema *Schema) {
-	c.Schemas = append(c.Schemas, schema)
+// FilterSchemas filters the cluster schemas using the content key and value.
+func (c *Cluster) FilterSchemas(k, v string) []*Schema {
+	schemas := []*Schema{}
+	for _, schema := range c.Schemas {
+		if schema.Content[k] == v {
+			schemas = append(schemas, schema)
+		}
+	}
+	return schemas
 }
