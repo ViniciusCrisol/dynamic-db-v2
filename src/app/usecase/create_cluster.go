@@ -16,15 +16,14 @@ func NewCreateCluster(repo app.ClusterRepo) *CreateCluster {
 }
 
 func (ucs *CreateCluster) Exec(name string) (*model.Cluster, error) {
-	url := ucs.repo.AssembleURL(name)
-	clusterWithSameURL, err := ucs.repo.Find(url)
+	clusterWithSameName, err := ucs.repo.Find(name)
 	if err != nil {
 		return nil, err
 	}
-	if clusterWithSameURL != nil {
-		return nil, errors.New("CLUSTER-URL-IN-USE")
+	if clusterWithSameName != nil {
+		return nil, errors.New("CLUSTER-NAME-IN-USE")
 	}
-	c := model.NewCluster(url)
+	c := model.NewCluster(name)
 	err = ucs.repo.Create(c)
 	return c, err
 }

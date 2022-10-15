@@ -2,6 +2,7 @@ package repo
 
 import (
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"os"
 	"sync"
@@ -11,41 +12,52 @@ import (
 )
 
 type cluster struct {
-	baseURL          string
+	basePath         string
 	clusterSemaphore map[string]*sync.Mutex
 }
 
-func NewCluster(baseURL string) app.ClusterRepo {
+func NewCluster(basePath string) app.ClusterRepo {
 	return &cluster{
-		baseURL:          baseURL,
+		basePath:         basePath,
 		clusterSemaphore: map[string]*sync.Mutex{},
 	}
 }
 
-func (repo *cluster) AssembleURL(name string) string {
-	const F_EXTENSION = "gob"
-	return fmt.Sprintf("%s/%s.%s", repo.baseURL, name, F_EXTENSION)
-}
-
 func (repo *cluster) Create(cluster *model.Cluster) error {
-	return repo.overwriteClusterFile(cluster)
+	path := repo.assemblePath(cluster.Name)
+	f, err := repo.Find(path)
+	if err != nil {
+		return err
+	}
+	if f != nil {
+		return errors.New("CLUSTER-NAME-IN-USE")
+	}
+	return repo.overwriteClusterFile(path, cluster)
 }
 
 func (repo *cluster) Update(cluster *model.Cluster) error {
-	return repo.overwriteClusterFile(cluster)
+	path := repo.assemblePath(cluster.Name)
+	f, err := repo.Find(path)
+	if err != nil {
+		return err
+	}
+	if f == nil {
+		return errors.New("INVALID-CLUSTER")
+	}
+	return repo.overwriteClusterFile(path, cluster)
 }
 
-func (repo *cluster) Find(url string) (*model.Cluster, error) {
-	repo.lockClusterFile(url)
-	defer repo.unlockClusterFile(url)
+func (repo *cluster) Find(path string) (*model.Cluster, error) {
+	repo.lockClusterFile(path)
+	defer repo.unlockClusterFile(path)
 
-	_, status := os.Stat(url)
+	_, status := os.Stat(path)
 	fExists := os.IsNotExist(status)
 	if fExists {
 		return nil, nil
 	}
 
-	f, err := os.Open(url)
+	f, err := os.Open(path)
 	if err != nil {
 		// TODO: Handle it.
 		return nil, err
@@ -62,25 +74,12 @@ func (repo *cluster) Find(url string) (*model.Cluster, error) {
 	return cluster, nil
 }
 
-func (repo *cluster) lockClusterFile(url string) {
-	smr, ok := repo.clusterSemaphore[url]
-	if !ok {
-		smr = &sync.Mutex{}
-		repo.clusterSemaphore[url] = smr
-	}
-	smr.Lock()
-}
+// overwriteClusterFile creates or updates the cluster by its path.
+func (repo *cluster) overwriteClusterFile(path string, cluster *model.Cluster) error {
+	repo.lockClusterFile(path)
+	defer repo.unlockClusterFile(path)
 
-func (repo *cluster) unlockClusterFile(url string) {
-	smr := repo.clusterSemaphore[url]
-	smr.Unlock()
-}
-
-func (repo *cluster) overwriteClusterFile(cluster *model.Cluster) error {
-	repo.lockClusterFile(cluster.URL)
-	defer repo.unlockClusterFile(cluster.URL)
-
-	f, err := os.Create(cluster.URL)
+	f, err := os.Create(path)
 	if err != nil {
 		// TODO: Handle it.
 		return err
@@ -93,4 +92,26 @@ func (repo *cluster) overwriteClusterFile(cluster *model.Cluster) error {
 		// TODO: Handle it.
 	}
 	return err
+}
+
+// assemblePath assembles the file cluster path using its name.
+func (repo *cluster) assemblePath(name string) string {
+	const F_EXTENSION = "gob"
+	return fmt.Sprintf("%s/%s.%s", repo.basePath, name, F_EXTENSION)
+}
+
+// lockClusterFile locks the cluster file.
+func (repo *cluster) lockClusterFile(path string) {
+	smr, ok := repo.clusterSemaphore[path]
+	if !ok {
+		smr = &sync.Mutex{}
+		repo.clusterSemaphore[path] = smr
+	}
+	smr.Lock()
+}
+
+// unlockClusterFile realizes the cluster file.
+func (repo *cluster) unlockClusterFile(path string) {
+	smr := repo.clusterSemaphore[path]
+	smr.Unlock()
 }

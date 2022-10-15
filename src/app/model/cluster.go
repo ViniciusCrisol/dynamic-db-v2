@@ -8,18 +8,18 @@ import (
 
 type Cluster struct {
 	ID        string
-	URL       string
+	Name      string
 	Schemas   []*Schema
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
 // NewCluster returns a new cluster.
-func NewCluster(url string) *Cluster {
+func NewCluster(name string) *Cluster {
 	now := time.Now()
 	return &Cluster{
 		ID:        uuid.NewString(),
-		URL:       url,
+		Name:      name,
 		Schemas:   []*Schema{},
 		CreatedAt: now,
 		UpdatedAt: now,
