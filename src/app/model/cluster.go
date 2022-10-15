@@ -9,7 +9,7 @@ import (
 type Cluster struct {
 	ID        string
 	URL       string
-	schemas   []*Schema
+	Schemas   []*Schema
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -20,7 +20,7 @@ func NewCluster(url string) *Cluster {
 	return &Cluster{
 		ID:        uuid.NewString(),
 		URL:       url,
-		schemas:   []*Schema{},
+		Schemas:   []*Schema{},
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
@@ -28,5 +28,5 @@ func NewCluster(url string) *Cluster {
 
 // AppendSchema stores a schema in the cluster.
 func (c *Cluster) AppendSchema(schema *Schema) {
-	c.schemas = append(c.schemas, schema)
+	c.Schemas = append(c.Schemas, schema)
 }
