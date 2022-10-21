@@ -26,37 +26,42 @@ func SendJSON(status int, data any, ctx *gin.Context) {
 // HandleErr returns to the HTTP client BindRequestBody errors. BindRequestBody could
 // return a binding or a validation error. This function identifies the error type by the
 // message prefix and deals with it.
-func HandleErr(err error, context *gin.Context) {
+func HandleErr(err error, ctx *gin.Context) {
 	msg := err.Error()
-	if !strings.HasPrefix(msg, VALIDATION_ERR_PREFIX) {
-		handleAppErr(err, context)
+	if strings.HasPrefix(msg, VALIDATION_ERR_PREFIX) {
+		handleValidationErr(msg, ctx)
 		return
 	}
+	handleAppErr(err, ctx)
+}
+
+// handleValidationErr  formats a validation error group and return it to the client.
+func handleValidationErr(msg string, ctx *gin.Context) {
 	formattedMsg := strings.TrimPrefix(msg, VALIDATION_ERR_PREFIX)
 	resp := DefaultResponse{
 		Message: formattedMsg,
 		Status:  app.VALIDATION_ERR_STATUS,
 	}
-	context.JSON(app.VALIDATION_ERR_STATUS, resp)
+	ctx.JSON(app.VALIDATION_ERR_STATUS, resp)
 }
 
 // handleAppErr searches for error messages in the Errs list using the GetHTTPErr func. If
 // an matches, its message and status will be returned to the HTTP client. Otherwise, a
 // standard error will be returned.
-func handleAppErr(err error, context *gin.Context) {
+func handleAppErr(err error, ctx *gin.Context) {
 	msg, status := app.GetHTTPErr(err)
 	resp := DefaultResponse{
 		Message: msg,
 		Status:  status,
 	}
-	context.JSON(status, resp)
+	ctx.JSON(status, resp)
 }
 
 // BindRequestBody binds the request body into the binder variable. It also validates the
 // entries according to the "validate" tag of the struct fields. To change the validation
 // message language, switch the translator language.
-func BindRequestBody(binder any, context *gin.Context) error {
-	err := context.ShouldBindJSON(binder)
+func BindRequestBody(binder any, ctx *gin.Context) error {
+	err := ctx.ShouldBindJSON(binder)
 	if err != nil {
 		return err
 	}

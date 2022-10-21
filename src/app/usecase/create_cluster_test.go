@@ -10,9 +10,9 @@ func TestCreateCluster(ts *testing.T) {
 	ts.Run("it should be able to create a cluster", func(t *testing.T) {
 		name := "cluster-name"
 		repo := repo.NewClusterMem()
-		usecase := NewCreateCluster(repo)
+		create := NewCreateCluster(repo)
 
-		_, err := usecase.Exec(name)
+		_, err := create.Exec(name)
 		if err != nil {
 			t.Error(err)
 		}
@@ -21,10 +21,10 @@ func TestCreateCluster(ts *testing.T) {
 	ts.Run("it should not be able to create a cluster with a duplicated name", func(t *testing.T) {
 		name := "cluster-name"
 		repo := repo.NewClusterMem()
-		usecase := NewCreateCluster(repo)
-		usecase.Exec(name)
+		create := NewCreateCluster(repo)
+		create.Exec(name)
 
-		_, err := usecase.Exec(name)
+		_, err := create.Exec(name)
 		if err == nil {
 			t.Error()
 		}

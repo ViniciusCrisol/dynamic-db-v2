@@ -20,6 +20,7 @@ var Errs = map[string]string{
 	"INTERNAL":        INTERNAL_ERR_MSG,
 	"ROUTE_NOT_FOUND": ROUTE_NOT_FOUND_ERR_MSG,
 	// Application messages
+	"INVALID-SCHEMA":      "400 - Invalid schema ID. Change the ID and try it again.",
 	"INVALID-CLUSTER":     "400 - Invalid cluster name. Change the name and try it again.",
 	"CLUSTER-NAME-IN-USE": "400 - Cluster name already in use. Change the name and try it again.",
 }

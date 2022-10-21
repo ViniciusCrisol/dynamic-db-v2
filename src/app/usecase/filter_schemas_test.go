@@ -10,15 +10,16 @@ func TestFilterSchemas(ts *testing.T) {
 	ts.Run("it should be able to filter the cluster schemas", func(t *testing.T) {
 		name := "cluster-name"
 		repo := repo.NewClusterMem()
-		filterUsecase := NewFilterSchemas(repo)
-		createSchemaUsecase := NewCreateSchema(repo)
-		createClusterUsecase := NewCreateCluster(repo)
-		createClusterUsecase.Exec(name)
-		createSchemaUsecase.Exec(name, map[string]string{"name": "Shinji", "age": "14"})
-		createSchemaUsecase.Exec(name, map[string]string{"name": "Asuka", "age": "14"})
-		createSchemaUsecase.Exec(name, map[string]string{"name": "Rei", "age": "14"})
+		filter := NewFilterSchemas(repo)
+		createSchema := NewCreateSchema(repo)
+		createCluster := NewCreateCluster(repo)
 
-		s, err := filterUsecase.Exec(name, "name", "Asuka")
+		createCluster.Exec(name)
+		createSchema.Exec(name, map[string]string{"name": "Shinji", "age": "14"})
+		createSchema.Exec(name, map[string]string{"name": "Asuka", "age": "14"})
+		createSchema.Exec(name, map[string]string{"name": "Rei", "age": "14"})
+
+		s, err := filter.Exec(name, "name", "Asuka")
 		if err != nil ||
 			s[0].Content["age"] != "14" ||
 			s[0].Content["name"] != "Asuka" {

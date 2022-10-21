@@ -10,11 +10,11 @@ func TestCreateSchemas(ts *testing.T) {
 	ts.Run("it should be able to filter the cluster schemas", func(t *testing.T) {
 		name := "cluster-name"
 		repo := repo.NewClusterMem()
-		createSchemaUsecase := NewCreateSchema(repo)
-		createClusterUsecase := NewCreateCluster(repo)
-		createClusterUsecase.Exec(name)
+		createSchema := NewCreateSchema(repo)
+		createCluster := NewCreateCluster(repo)
+		createCluster.Exec(name)
 
-		s, err := createSchemaUsecase.Exec(name, map[string]string{"name": "Asuka", "age": "14"})
+		s, err := createSchema.Exec(name, map[string]string{"name": "Asuka", "age": "14"})
 		if err != nil ||
 			s.Content["age"] != "14" ||
 			s.Content["name"] != "Asuka" {
