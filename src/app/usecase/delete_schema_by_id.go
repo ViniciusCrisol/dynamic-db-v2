@@ -15,7 +15,7 @@ func NewDeleteSchemaByID(repo app.ClusterRepo) *DeleteSchemaByID {
 	return &DeleteSchemaByID{repo}
 }
 
-// Exec deletes a from cluster and updates it.
+// Exec gets the cluster by its name and deletes its schemas using the schema ID.
 func (ucs *DeleteSchemaByID) Exec(name string, id string) error {
 	c, err := ucs.repo.Find(name)
 	if err != nil {

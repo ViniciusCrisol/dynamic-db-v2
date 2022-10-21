@@ -7,7 +7,7 @@ import (
 )
 
 func TestFilterSchemas(ts *testing.T) {
-	ts.Run("it should be able to filter the cluster schemas", func(t *testing.T) {
+	ts.Run("it should be able to filter the schemas", func(t *testing.T) {
 		name := "cluster-name"
 		repo := repo.NewClusterMem()
 		filter := NewFilterSchemas(repo)
