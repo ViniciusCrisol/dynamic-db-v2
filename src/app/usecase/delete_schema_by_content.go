@@ -18,7 +18,7 @@ func NewDeleteSchemaByValue(repo app.ClusterRepo) *DeleteSchemaByValue {
 
 // Exec gets the cluster by its name and deletes its schemas using the content key and
 // value.
-func (ucs *DeleteSchemaByValue) Exec(name, k, v string) error {
+func (ucs *DeleteSchemaByValue) Exec(name string, content map[string]string) error {
 	c, err := ucs.repo.Find(name)
 	if err != nil {
 		return err
@@ -28,7 +28,13 @@ func (ucs *DeleteSchemaByValue) Exec(name, k, v string) error {
 	}
 	s := []*model.Schema{}
 	for _, schema := range c.Schemas {
-		if schema.Content[k] != v {
+		keepSchema := true
+		for k, v := range content {
+			if schema.Content[k] == v {
+				keepSchema = false
+			}
+		}
+		if keepSchema {
 			s = append(s, schema)
 		}
 	}

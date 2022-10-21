@@ -19,7 +19,7 @@ func TestDeleteSchemaByValue(ts *testing.T) {
 		createSchema.Exec(name, map[string]string{"name": "Shinji", "age": "14"})
 		createSchema.Exec(name, map[string]string{"name": "Rei", "age": "14"})
 
-		err := deleteSchemaByValue.Exec(name, "name", "Asuka")
+		err := deleteSchemaByValue.Exec(name, map[string]string{"name": "Asuka"})
 		if err != nil || c.Schemas[0].ID == s.ID {
 			t.Error(err)
 		}
@@ -37,7 +37,7 @@ func TestDeleteSchemaByValue(ts *testing.T) {
 		createSchema.Exec(name, map[string]string{"name": "Asuka", "age": "14"})
 		createSchema.Exec(name, map[string]string{"name": "Rei", "age": "14"})
 
-		err := deleteSchemaByValue.Exec(name, "age", "14")
+		err := deleteSchemaByValue.Exec(name, map[string]string{"age": "14"})
 		if err != nil || len(c.Schemas) != 0 {
 			t.Error(err)
 		}
@@ -48,7 +48,7 @@ func TestDeleteSchemaByValue(ts *testing.T) {
 		repo := repo.NewClusterMem()
 		usecase := NewDeleteSchemaByValue(repo)
 
-		err := usecase.Exec(name, "name", "Asuka")
+		err := usecase.Exec(name, map[string]string{"name": "Asuka"})
 		if err == nil {
 			t.Error()
 		}

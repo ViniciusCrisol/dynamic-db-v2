@@ -7,12 +7,12 @@ import (
 )
 
 type cluster struct {
-	createCluster *usecase.CreateCluster
+	create *usecase.CreateCluster
 }
 
 // NewCluster returns a cluster router.
-func NewCluster(createCluster *usecase.CreateCluster) *cluster {
-	return &cluster{createCluster}
+func NewCluster(create *usecase.CreateCluster) *cluster {
+	return &cluster{create}
 }
 
 // Create handles an HTTP request to create a cluster and return it to the client.
@@ -24,7 +24,7 @@ func (rtr *cluster) Create(ctx *gin.Context) {
 		return
 	}
 
-	c, err := rtr.createCluster.Exec(b.Name)
+	c, err := rtr.create.Exec(b.Name)
 	if err != nil {
 		api.HandleErr(err, ctx)
 		return

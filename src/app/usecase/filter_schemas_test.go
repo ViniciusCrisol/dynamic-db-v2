@@ -19,7 +19,7 @@ func TestFilterSchemas(ts *testing.T) {
 		createSchema.Exec(name, map[string]string{"name": "Asuka", "age": "14"})
 		createSchema.Exec(name, map[string]string{"name": "Rei", "age": "14"})
 
-		s, err := filter.Exec(name, "name", "Asuka")
+		s, err := filter.Exec(name, map[string]string{"name": "Asuka"})
 		if err != nil ||
 			s[0].Content["age"] != "14" ||
 			s[0].Content["name"] != "Asuka" {
@@ -32,7 +32,7 @@ func TestFilterSchemas(ts *testing.T) {
 		repo := repo.NewClusterMem()
 		usecase := NewFilterSchemas(repo)
 
-		_, err := usecase.Exec(name, "name", "Asuka")
+		_, err := usecase.Exec(name, map[string]string{"name": "Asuka"})
 		if err == nil {
 			t.Error()
 		}

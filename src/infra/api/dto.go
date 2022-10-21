@@ -9,3 +9,8 @@ type DefaultResponse struct {
 type CreateClusterDTO struct {
 	Name string `json:"name"`
 }
+
+type CreateSchemaDTO struct {
+	Name    string            `json:"cluster"`
+	Content map[string]string `json:"content"`
+}
