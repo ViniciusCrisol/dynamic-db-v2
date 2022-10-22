@@ -11,6 +11,5 @@ type CreateClusterDTO struct {
 }
 
 type CreateSchemaDTO struct {
-	Name    string            `json:"cluster"`
 	Content map[string]string `json:"content"`
 }

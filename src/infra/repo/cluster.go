@@ -25,7 +25,7 @@ func NewCluster(basePath string) app.ClusterRepo {
 
 func (repo *cluster) Create(cluster *model.Cluster) error {
 	path := repo.assemblePath(cluster.Name)
-	f, err := repo.Find(path)
+	f, err := repo.findByPath(path)
 	if err != nil {
 		return err
 	}
@@ -37,7 +37,7 @@ func (repo *cluster) Create(cluster *model.Cluster) error {
 
 func (repo *cluster) Update(cluster *model.Cluster) error {
 	path := repo.assemblePath(cluster.Name)
-	f, err := repo.Find(path)
+	f, err := repo.findByPath(path)
 	if err != nil {
 		return err
 	}
@@ -47,7 +47,14 @@ func (repo *cluster) Update(cluster *model.Cluster) error {
 	return repo.overwriteClusterFile(path, cluster)
 }
 
-func (repo *cluster) Find(path string) (*model.Cluster, error) {
+func (repo *cluster) Find(name string) (*model.Cluster, error) {
+	path := repo.assemblePath(name)
+	return repo.findByPath(path)
+}
+
+// findByPath searches for a cluster by its path. If it exists, it will be returned.
+// Otherwise, a nil pointer will be returned.
+func (repo *cluster) findByPath(path string) (*model.Cluster, error) {
 	repo.lockClusterFile(path)
 	defer repo.unlockClusterFile(path)
 

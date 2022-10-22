@@ -10,7 +10,7 @@ func TestDeleteSchemaByValue(ts *testing.T) {
 	ts.Run("it should be able to delete a schema", func(t *testing.T) {
 		name := "cluster-name"
 		repo := repo.NewClusterMem()
-		deleteSchemaByValue := NewDeleteSchemaByValue(repo)
+		deleteSchemaByValue := NewDeleteSchemaByContent(repo)
 		createCluster := NewCreateCluster(repo)
 		createSchema := NewCreateSchema(repo)
 
@@ -28,7 +28,7 @@ func TestDeleteSchemaByValue(ts *testing.T) {
 	ts.Run("it should be able to many schemas", func(t *testing.T) {
 		name := "cluster-name"
 		repo := repo.NewClusterMem()
-		deleteSchemaByValue := NewDeleteSchemaByValue(repo)
+		deleteSchemaByValue := NewDeleteSchemaByContent(repo)
 		createCluster := NewCreateCluster(repo)
 		createSchema := NewCreateSchema(repo)
 
@@ -46,7 +46,7 @@ func TestDeleteSchemaByValue(ts *testing.T) {
 	ts.Run("it should not be able to delete a schema of a non-existent cluster", func(t *testing.T) {
 		name := "cluster-name"
 		repo := repo.NewClusterMem()
-		usecase := NewDeleteSchemaByValue(repo)
+		usecase := NewDeleteSchemaByContent(repo)
 
 		err := usecase.Exec(name, map[string]string{"name": "Asuka"})
 		if err == nil {

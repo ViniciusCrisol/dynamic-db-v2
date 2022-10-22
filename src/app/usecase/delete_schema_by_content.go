@@ -7,18 +7,17 @@ import (
 	"github.com/viniciuscrisol/dynamic-db-v2/app/model"
 )
 
-type DeleteSchemaByValue struct {
+type DeleteSchemaByContent struct {
 	repo app.ClusterRepo
 }
 
-// NewDeleteSchemaByValue returns a new delete schema usecase.
-func NewDeleteSchemaByValue(repo app.ClusterRepo) *DeleteSchemaByValue {
-	return &DeleteSchemaByValue{repo}
+// NewDeleteSchemaByContent returns a new delete schema usecase.
+func NewDeleteSchemaByContent(repo app.ClusterRepo) *DeleteSchemaByContent {
+	return &DeleteSchemaByContent{repo}
 }
 
-// Exec gets the cluster by its name and deletes its schemas using the content key and
-// value.
-func (ucs *DeleteSchemaByValue) Exec(name string, content map[string]string) error {
+// Exec gets the cluster by its name and deletes its schemas using the content.
+func (ucs *DeleteSchemaByContent) Exec(name string, content map[string]string) error {
 	c, err := ucs.repo.Find(name)
 	if err != nil {
 		return err
@@ -28,13 +27,13 @@ func (ucs *DeleteSchemaByValue) Exec(name string, content map[string]string) err
 	}
 	s := []*model.Schema{}
 	for _, schema := range c.Schemas {
-		keepSchema := true
+		keep := true
 		for k, v := range content {
 			if schema.Content[k] == v {
-				keepSchema = false
+				keep = false
 			}
 		}
-		if keepSchema {
+		if keep {
 			s = append(s, schema)
 		}
 	}

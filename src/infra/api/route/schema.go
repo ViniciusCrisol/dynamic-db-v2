@@ -27,8 +27,9 @@ func (rtr *schema) Create(ctx *gin.Context) {
 		api.HandleErr(err, ctx)
 		return
 	}
+	name := ctx.Param("name")
 
-	c, err := rtr.create.Exec(b.Name, b.Content)
+	c, err := rtr.create.Exec(name, b.Content)
 	if err != nil {
 		api.HandleErr(err, ctx)
 		return

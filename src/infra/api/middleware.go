@@ -23,6 +23,16 @@ func SendJSON(status int, data any, ctx *gin.Context) {
 	ctx.JSON(status, resp)
 }
 
+// SendRouteNotFound returns to the HTTP client a route not found message in a JSON.
+func SendRouteNotFound(ctx *gin.Context) {
+	status := app.ROUTE_NOT_FOUND_ERR_STATUS
+	resp := DefaultResponse{
+		Status:  status,
+		Message: app.ROUTE_NOT_FOUND_ERR_MSG,
+	}
+	ctx.JSON(status, resp)
+}
+
 // HandleErr returns to the HTTP client BindRequestBody errors. BindRequestBody could
 // return a binding or a validation error. This function identifies the error type by the
 // message prefix and deals with it.
