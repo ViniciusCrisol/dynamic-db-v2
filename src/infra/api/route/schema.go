@@ -7,15 +7,24 @@ import (
 )
 
 type schema struct {
-	create     *usecase.CreateSchema
-	deleteByID *usecase.DeleteSchemaByID
+	create          *usecase.CreateSchema
+	deleteByID      *usecase.DeleteSchemaByID
+	deleteByContent *usecase.DeleteSchemaByContent
+	filter          *usecase.FilterSchemas
 }
 
 // NewSchema returns a schema router.
-func NewSchema(create *usecase.CreateSchema, deleteByID *usecase.DeleteSchemaByID) *schema {
+func NewSchema(
+	create *usecase.CreateSchema,
+	deleteByID *usecase.DeleteSchemaByID,
+	deleteByContent *usecase.DeleteSchemaByContent,
+	filter *usecase.FilterSchemas,
+) *schema {
 	return &schema{
-		create:     create,
-		deleteByID: deleteByID,
+		create:          create,
+		deleteByID:      deleteByID,
+		deleteByContent: deleteByContent,
+		filter:          filter,
 	}
 }
 
@@ -34,7 +43,7 @@ func (rtr *schema) Create(ctx *gin.Context) {
 		api.HandleErr(err, ctx)
 		return
 	}
-	api.SendJSON(200, c, ctx)
+	api.SendJSON(201, c, ctx)
 }
 
 // DeleteByID handles an HTTP request to delete a schema by ID.
@@ -47,5 +56,37 @@ func (rtr *schema) DeleteByID(ctx *gin.Context) {
 		api.HandleErr(err, ctx)
 		return
 	}
-	api.SendJSON(201, nil, ctx)
+	api.SendJSON(204, nil, ctx)
+}
+
+// DeleteByContent handles an HTTP request to delete schemas by it content.
+func (rtr *schema) DeleteByContent(ctx *gin.Context) {
+	name := ctx.Param("name")
+	content := map[string]string{}
+	for k, v := range ctx.Request.URL.Query() {
+		content[k] = v[0]
+	}
+
+	err := rtr.deleteByContent.Exec(name, content)
+	if err != nil {
+		api.HandleErr(err, ctx)
+		return
+	}
+	api.SendJSON(204, nil, ctx)
+}
+
+// Filter handles an HTTP request to filter schemas by it content.
+func (rtr *schema) Filter(ctx *gin.Context) {
+	name := ctx.Param("name")
+	content := map[string]string{}
+	for k, v := range ctx.Request.URL.Query() {
+		content[k] = v[0]
+	}
+
+	schemas, err := rtr.filter.Exec(name, content)
+	if err != nil {
+		api.HandleErr(err, ctx)
+		return
+	}
+	api.SendJSON(200, schemas, ctx)
 }

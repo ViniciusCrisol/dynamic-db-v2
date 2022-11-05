@@ -1,0 +1,229 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "Schema",
+    "contact": {}
+  },
+  "host": "localhost:8080",
+  "basePath": "/api/v2",
+  "securityDefinitions": {},
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/cluster": {
+      "post": {
+        "summary": "CLUSTER - Create",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "CLUSTER-Create",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CLUSTER-CreateRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/cluster/Harry Potter/schema": {
+      "post": {
+        "summary": "SCHEMA - Create",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "SCHEMA-Create",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/SCHEMA-CreateRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      },
+      "get": {
+        "summary": "SCHEMA - Filter",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "SCHEMA-Filter",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "param_1",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "param_n",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      },
+      "delete": {
+        "summary": "SCHEMA - Delete by content",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "SCHEMA-Deletebycontent",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "param_1",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "param_n",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/cluster/Harry Potter/schema/12c3451c-15f0-453b-a718-c46a74d00a7d": {
+      "delete": {
+        "summary": "SCHEMA - Delete by ID",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "SCHEMA-DeletebyID",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CLUSTER-CreateRequest": {
+      "title": "CLUSTER-CreateRequest",
+      "example": {
+        "name": "Harry Potter"
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "SCHEMA-CreateRequest": {
+      "title": "SCHEMA-CreateRequest",
+      "example": {
+        "content": {
+          "name": "Hermione Granger",
+          "age": "14"
+        }
+      },
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/definitions/Content"
+        }
+      },
+      "required": [
+        "content"
+      ]
+    },
+    "Content": {
+      "title": "Content",
+      "example": {
+        "name": "Hermione Granger",
+        "age": "14"
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "age": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "age"
+      ]
+    }
+  },
+  "tags": [
+    {
+      "name": "Misc",
+      "description": ""
+    }
+  ]
+}

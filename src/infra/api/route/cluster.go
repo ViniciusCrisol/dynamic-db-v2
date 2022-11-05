@@ -29,5 +29,5 @@ func (rtr *cluster) Create(ctx *gin.Context) {
 		api.HandleErr(err, ctx)
 		return
 	}
-	api.SendJSON(200, c, ctx)
+	api.SendJSON(201, c, ctx)
 }

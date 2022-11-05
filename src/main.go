@@ -26,12 +26,18 @@ func main() {
 	// Schema
 	createSchema := usecase.NewCreateSchema(repo)
 	deleteSchemaByID := usecase.NewDeleteSchemaByID(repo)
+	deleteSchemaByContent := usecase.NewDeleteSchemaByContent(repo)
+	filterSchemas := usecase.NewFilterSchemas(repo)
 	schemaRouter := route.NewSchema(
 		createSchema,
 		deleteSchemaByID,
+		deleteSchemaByContent,
+		filterSchemas,
 	)
 	schemaGroup.POST("/", schemaRouter.Create)
 	schemaGroup.DELETE("/:id", schemaRouter.DeleteByID)
+	schemaGroup.DELETE("/", schemaRouter.DeleteByContent)
+	schemaGroup.GET("/", schemaRouter.Filter)
 
 	initServer(router)
 }
