@@ -7,6 +7,7 @@ import (
 	"os"
 	"sync"
 
+	"github.com/rs/zerolog/log"
 	"github.com/viniciuscrisol/dynamic-db-v2/app"
 	"github.com/viniciuscrisol/dynamic-db-v2/app/model"
 )
@@ -66,7 +67,7 @@ func (repo *cluster) findByPath(path string) (*model.Cluster, error) {
 
 	f, err := os.Open(path)
 	if err != nil {
-		// TODO: Handle it.
+		log.Error().Err(err).Msg("Failed to open cluster file")
 		return nil, err
 	}
 	defer f.Close()
@@ -75,7 +76,7 @@ func (repo *cluster) findByPath(path string) (*model.Cluster, error) {
 	decoder := gob.NewDecoder(f)
 	err = decoder.Decode(cluster)
 	if err != nil {
-		// TODO: Handle it.
+		log.Error().Err(err).Msg("Failed to decode cluster data")
 		return nil, err
 	}
 	return cluster, nil
@@ -88,7 +89,7 @@ func (repo *cluster) overwriteClusterFile(path string, cluster *model.Cluster) e
 
 	f, err := os.Create(path)
 	if err != nil {
-		// TODO: Handle it.
+		log.Error().Err(err).Msg("Failed to create cluster file")
 		return err
 	}
 	defer f.Close()
@@ -96,7 +97,7 @@ func (repo *cluster) overwriteClusterFile(path string, cluster *model.Cluster) e
 	encoder := gob.NewEncoder(f)
 	err = encoder.Encode(cluster)
 	if err != nil {
-		// TODO: Handle it.
+		log.Error().Err(err).Msg("Failed to encode cluster data")
 	}
 	return err
 }
